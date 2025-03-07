@@ -314,12 +314,9 @@ renderCUDA(
 
 		// Iterate over current batch
 		for (int j = 0; !done && j < min(BLOCK_SIZE, toDo); j++) // this could be way less than 256
-		{
-			// Keep track of current position in range
-			contributor++; // for backward
-			
-			if (max_hit > 0 && contributor > max_hit) // early stopping
-			{
+		{	
+
+			if (max_hit > 0 && contributor > max_hit) {
 				done = true;
 				continue;
 			}
@@ -327,9 +324,13 @@ renderCUDA(
 			// Compute alpha based on ratio
 			float2 xy = collected_xy[j];
 			float2 d = { xy.x - pixf.x, xy.y - pixf.y };  // screen space center point diff
+
 			float my_radius2D = collected_radius2D[j];
 			float opacity = collected_opacities[j];
 
+			if (dist2(d) >= my_radius2D * my_radius2D) 
+				continue;
+			
 			// Evaluate the point density equation
 			float alpha = (1 - dist2(d) / (my_radius2D * my_radius2D)) * opacity; // 4K4D's opacity function
 
@@ -338,6 +339,7 @@ renderCUDA(
  
 			if (alpha < 1.0f / 255.0f) // skip low alpha points
 				continue;
+
 			float test_T = T * (1 - alpha);
 
 			// Eq. (3) from 3D Gaussian splatting paper.
@@ -346,8 +348,8 @@ renderCUDA(
 			D += depths[collected_id[j]] * alpha * T; // volume rendering depth
 			T = test_T; // updated transmittance
 
-			// Keep track of last range entry to update this
-			// pixel.
+			// Keep track of last range entry to update this pixel.
+			contributor++; // for backward
 			last_contributor = contributor;
 
 			if (test_T < 0.0001f) // early stopping
