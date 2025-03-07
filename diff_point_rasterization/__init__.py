@@ -70,6 +70,7 @@ class _RasterizePoints(torch.autograd.Function):
             sh,
             raster_settings.sh_degree,
             raster_settings.campos,
+            raster_settings.max_hit,
             raster_settings.prefiltered,
             raster_settings.debug
         )
@@ -161,6 +162,7 @@ class PointRasterizationSettings(NamedTuple):
     projmatrix: torch.Tensor
     sh_degree: int
     campos: torch.Tensor
+    max_hit: int 
     prefiltered: bool
     debug: bool
 

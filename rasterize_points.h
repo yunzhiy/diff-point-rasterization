@@ -32,6 +32,7 @@ RasterizePointsCUDA(
 	const torch::Tensor& sh,
 	const int degree,
 	const torch::Tensor& campos,
+	const int max_hit,
 	const bool prefiltered,
 	const bool debug);
 

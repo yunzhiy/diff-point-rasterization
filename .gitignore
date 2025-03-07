@@ -4,3 +4,4 @@ dist/
 diff_point_rasterization/__pycache__/
 diff_point_rasterization/*.so
 *.pyd
+third_party/

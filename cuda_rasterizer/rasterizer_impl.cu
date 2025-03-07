@@ -212,6 +212,7 @@ int CudaRasterizer::Rasterizer::forward(
 	const float* projmatrix,
 	const float* cam_pos,
 	const float tan_fovx, float tan_fovy,
+	const int max_hit,
 	const bool prefiltered,
 	float* out_color,
 	float* out_depth,
@@ -329,6 +330,7 @@ int CudaRasterizer::Rasterizer::forward(
 		out_alpha,
 		imgState.n_contrib,
 		background,
+		max_hit,
 		out_color,
 		out_depth), debug);
 

@@ -198,7 +198,9 @@ __global__ void preprocessCUDA(int P, int D, int M,
 	float3 p_proj = { p_hom.x * p_w, p_hom.y * p_w, p_hom.z * p_w };
 
 	// Compute screen space radius from input world space radius
-	float my_radius2D = abs(focal_y * radius[idx] * p_w) * scale_modifier;
+	float my_radius2D;
+	my_radius2D = abs(focal_y * radius[idx] * p_w) * scale_modifier;
+
 	// OpenGL K: 2 * self.fy / self.H,
 	// Radius conversion: abs(H * K[1][1] * radius / gl_Position.w) * radii_mult
 
@@ -252,6 +254,7 @@ renderCUDA(
 	float* __restrict__ out_alpha,
 	uint32_t* __restrict__ n_contrib,
 	const float* __restrict__ bg_color,
+	const int max_hit,
 	float* __restrict__ out_color,
 	float* __restrict__ out_depth)
 {
@@ -314,6 +317,12 @@ renderCUDA(
 		{
 			// Keep track of current position in range
 			contributor++; // for backward
+			
+			if (max_hit > 0 && contributor > max_hit) // early stopping
+			{
+				done = true;
+				continue;
+			}
 
 			// Compute alpha based on ratio
 			float2 xy = collected_xy[j];
@@ -374,6 +383,7 @@ void FORWARD::render(
 	float* out_alpha,
 	uint32_t* n_contrib,
 	const float* bg_color,
+	const int max_hit,
 	float* out_color,
 	float* out_depth)
 {
@@ -389,6 +399,7 @@ void FORWARD::render(
 		out_alpha,
 		n_contrib,
 		bg_color,
+		max_hit,
 		out_color,
 		out_depth);
 }

@@ -58,6 +58,7 @@ namespace FORWARD
 		float* out_alpha,
 		uint32_t* n_contrib,
 		const float* bg_color,
+		const int max_hit,
 		float* out_color,
 		float* out_depth);
 }

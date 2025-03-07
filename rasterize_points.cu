@@ -49,6 +49,7 @@ RasterizePointsCUDA(
 	const torch::Tensor& sh,
 	const int degree,
 	const torch::Tensor& campos,
+	const int max_hit,
 	const bool prefiltered,
 	const bool debug)
 {
@@ -104,6 +105,7 @@ RasterizePointsCUDA(
 		campos.contiguous().data_ptr<float>(),
 		tan_fovx,
 		tan_fovy,
+		max_hit,
 		prefiltered,
 		out_color.contiguous().data_ptr<float>(),
 		out_depth.contiguous().data_ptr<float>(),
